@@ -1,0 +1,155 @@
+{% extends 'ecom/customer_base.html' %}
+{% load static %}
+
+{% block content %}
+<head>
+
+</head>
+<style media="screen">
+.error {
+        color: red;
+      }
+.panel-title {display: inline;font-weight: bold;}
+.checkbox.pull-right { margin: 0; }
+.pl-ziro { padding-left: 0px; }
+</style>
+<br><br>
+<center><i>This is a FAKE PAYMENT. Just for demo purpose</i></center>
+<br><br>
+<div class="container" style="text-align:center; padding-left:300px;">
+    <div class="row">
+        <div class="col-xs-12 col-md-4" style="height:500px; width:600px;">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        Payment Details
+                    </h3>
+                    <div class="checkbox pull-right">
+                        <label>
+                            <input type="checkbox" />
+                            Remember
+                        </label>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <form role="form" method="post" onsubmit="return validateform()" name="paymentForm">
+                    <div class="form-group">
+                        <label for="cardNumber">
+                            CARD NUMBER</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="cardNumber" id="cardNumber" placeholder="xxxx xxxx xxxx xxxx"
+                                required autofocus />
+                                <span id="cardError" class="error"></span>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4 col-md-4 pull-left">
+                            <div class="form-group">
+                                <label for="cvCode">
+                                    MONTH</label>
+                                
+                                    <input type="text" name="month"class="form-control" id="expityMonth" placeholder="MM - 02" required />
+                                    <span id="expiryMonthError" class="error"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-4 col-md-4">
+                            <div class="form-group">
+                                <label for="expityMonth">
+                                    EXPIRY YEAR</label>
+                                    <input type="text" name="expiry" class="form-control" id="expityYear" placeholder="YY - 24" required /></div>
+                                    <span id="expiryDateError" class="error"></span>
+                        </div>
+                        <div class="col-xs-4 col-md-4 pull-right">
+                            <div class="form-group">
+                                <label for="cvCode">
+                                    CV CODE</label>
+                                <input type="password" name="csv" class="form-control" id="cvCode" placeholder="CV - xxx" required />
+                                <span id="cvError" class="error"></span> 
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <ul class="nav nav-pills nav-stacked">
+                <li class="active"><a href="#"><span class="badge pull-right">{{total}}</span> Final Payment</a>
+                </li>
+            </ul>
+            <br/>
+            <a  class="btn btn-success btn-lg btn-block" role="button" id="payButton">Pay</a>
+        </div>
+    </div>
+</div>
+<script>
+    function validateCardNumber() {
+        const cardNumber = document.getElementById('cardNumber').value;
+        const cardError = document.getElementById('cardError');
+        const numberRegex = /^\d{16}$/;
+        if (cardNumber.length === 0 || cardNumber.length <16 || cardNumber.length > 16 || !numberRegex.test(cardNumber)) {
+            cardError.textContent = 'Card Number is required & should be valid';
+            return false;
+        }
+        else if(cardNumber.length === 16){
+            cardError.textContent = '';
+            return true;
+        }
+      }
+      function validateexpityMonth() {
+        const expityMonth = document.getElementById('expityMonth').value;
+        const cardError = document.getElementById('cardError');
+        const numberRegex = /^(0[1-9]|1[0-2])$/;
+        if (expityMonth.length === 0 || !numberRegex.test(expityMonth)) {
+            expiryMonthError.textContent = 'Month Should be 01 to 12';
+            return false;
+        }
+        else if(expityMonth.length === 2 || numberRegex.test(expityMonth)){
+            expiryMonthError.textContent = '';
+            return true;
+        }
+      }
+      function validateexpityYear() {
+        const expityYear = document.getElementById('expityYear').value;
+        const cardError = document.getElementById('cardError');
+        const numberRegex = /^(24|25|26|27|28)$/;
+        if (expityYear.length === 0 || !numberRegex.test(expityYear)) {
+            expiryDateError.textContent = 'Enter Valid Year';
+            return false;
+        }
+        else if(expityYear.length === 2 || numberRegex.test(expityYear)){
+            expiryDateError.textContent = '';
+            return true;
+        }
+      }
+      function validatecvCode() {
+        const cvCode = document.getElementById('cvCode').value;
+        const cardError = document.getElementById('cardError');
+        const greaterThan99Regex = /^(?!0+$)\d{3,}$/;
+        if (cvCode.length === 0 || !greaterThan99Regex.test(cvCode) || cvCode.length > 3 ) {
+            cvError.textContent = 'Enter Valid CVV';
+            return false;
+        }
+        else if(cvCode.length === 3 || greaterThan99Regex.test(cvCode)){
+            cvError.textContent = '';
+            return true;
+        }
+      }
+
+      document.getElementById('payButton').addEventListener('click', function() {
+        if(cardNumber.length === 0 || cvCode.length === 0 || expityYear.length === 0 || expityMonth.length === 0 )
+        {
+            alert('Please Enter All Credentials!');
+        }
+        else{
+            window.location.href = "/payment-success";
+        }
+      });
+     // Event listeners for input fields
+     document.getElementById('cardNumber').addEventListener('input', validateCardNumber);
+     document.getElementById('expityMonth').addEventListener('input', validateexpityMonth);
+     document.getElementById('expityYear').addEventListener('input', validateexpityYear);
+     document.getElementById('cvCode').addEventListener('input', validatecvCode);
+</script>
+
+{% endblock content %}
